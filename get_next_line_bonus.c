@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: dsedlets <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/05/01 16:38:15 by dsedlets          #+#    #+#             */
-/*   Updated: 2024/05/01 20:08:36 by dsedlets         ###   ########.fr       */
+/*   Created: 2024/05/01 20:17:08 by dsedlets          #+#    #+#             */
+/*   Updated: 2024/05/01 20:34:30 by dsedlets         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static char	*_fill_line_buffer(int fd, char *left_c, char *buffer);
 static char	*_set_line(char *line);
@@ -18,27 +18,27 @@ static char	*ft_strchr(char *s, int c);
 
 char	*get_next_line(int fd)
 {
-	static char	*left_c;
+	static char	*left_c[MAX_FD];
 	char		*line;
 	char		*buffer;
 
 	buffer = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
 	{
-		free(left_c);
+		free(left_c[fd]);
 		free(buffer);
-		left_c = NULL;
+		left_c[fd] = NULL;
 		buffer = NULL;
 		return (NULL);
 	}
 	if (!buffer)
 		return (NULL);
-	line = _fill_line_buffer(fd, left_c, buffer);
+	line = _fill_line_buffer(fd, left_c[fd], buffer);
 	free(buffer);
 	buffer = NULL;
 	if (!line)
 		return (NULL);
-	left_c = _set_line(line);
+	left_c[fd] = _set_line(line);
 	return (line);
 }
 
